@@ -26,6 +26,8 @@ if __name__ == '__main__':
 
     if args.type == 'random':
         print("Generating file "+args.dir+"/"+args.file_name)
+        if not os.path.exists(args.dir):
+            os.mkdir(args.dir)
         create_random_bootstrap_file(args.dir, args.file_name, args.size_mb, args.seed)
     else:
         print("Unimplemented")
