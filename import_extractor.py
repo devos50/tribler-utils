@@ -14,9 +14,9 @@ built_in_modules.update({
 })
 std_lib = sysconfig.get_python_lib(standard_lib=True)
 for top in pathlib.Path(std_lib).iterdir():
-    if top.startswith(('dist-packages', 'site-packages')):
+    if str(top).startswith(('dist-packages', 'site-packages')):
         continue
-    built_in_modules.add(top.split('.')[0])
+    built_in_modules.add(str(top).split('.')[0])
 
 external_modules = set()
 
@@ -37,7 +37,8 @@ def is_external_module(top_path, path, name):
 
 location = os.path.abspath(sys.argv[1])
 for dirpath, dirnames, filenames in os.walk(location):
-    for filename in (filename for filenames if filename.endswith('.py')):
+    py_filenames = [filename for filename in filenames if filename.endswith('.py')]
+    for filename in py_filenames:
         with pathlib.Path(dirpath, filename).open() as file:
             file_contents = file.read()
         if not file_contents:
