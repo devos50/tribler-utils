@@ -18,6 +18,13 @@ for top in pathlib.Path(std_lib).iterdir():
         continue
     built_in_modules.add(str(top).split('.')[0])
 
+# We take the top-folder as input
+location = os.path.abspath(sys.argv[1])
+hint_locations = [os.path.join(location, 'src', 'pyipv8'),
+                  os.path.join(location, 'src', 'anydex'),
+                  os.path.join(location, 'src', 'tribler-core'),
+                  os.path.join(location, 'src', 'tribler-common'),
+                  os.path.join(location, 'src', 'tribler-gui')]
 external_modules = set()
 
 
@@ -31,9 +38,10 @@ def is_external_module(top_path, path, name):
     name = name.split('.')[0]
     if name not in built_in_modules:
         try:
-            imp.find_module(name, [os.path.dirname(path), path, top_path])
+            imp.find_module(name, [os.path.dirname(path), path, top_path] + hint_locations)
         except ImportError:
             external_modules.add(name)
+
 
 location = os.path.abspath(sys.argv[1])
 for dirpath, dirnames, filenames in os.walk(location):
